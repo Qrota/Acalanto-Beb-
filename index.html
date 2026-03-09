@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acalanto Bebê - Abertura</title>
+  <meta name="description" content="Acalanto Bebê - Cuidando com amor desde o início">
+
+  <!-- Pré-conexão para a fonte -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <style>
+    /* Variáveis de cor */
+    :root {
+      --primary-pink: #ff6fb7;
+      --primary-soft-pink: #e8a4af;
+      --text-subtle: #6b7280;
+      --shadow-pink: rgba(255, 111, 183, 0.4);
+      --bg-gradient-start: rgba(255, 247, 247, 0.15);
+      --bg-gradient-end: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-image: linear-gradient(var(--bg-gradient-start), var(--bg-gradient-end)),
+                        url("imagens/fundo08.png");
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Container principal */
+    .splash {
+      text-align: center;
+      animation: fadeIn 1.2s ease forwards;
+      z-index: 10;
+      padding: 1rem;
+    }
+
+    /* Logo imagem */
+    .logo {
+      width: 120px;
+      height: auto;
+      margin: 0 auto 20px;
+      filter: drop-shadow(0 15px 20px var(--shadow-pink));
+      animation: bounce 1.8s infinite alternate ease-in-out, heartbeat 1.8s infinite;
+      display: block;
+    }
+
+    .title {
+      font-size: 48px;
+      font-weight: 700;
+      color: #f3a8a8;
+      text-shadow: 0 4px 15px rgba(255, 74, 159, 0.3);
+      margin-bottom: 8px;
+      animation: titlePop 1.2s ease forwards;
+    }
+
+    .subtitle {
+      font-size: 22px;
+      color: var(--text-subtle);
+      font-weight: 500;
+      opacity: 0;
+      animation: subtitleFade 1.8s 0.8s forwards;
+    }
+
+    /* Barra de progresso */
+    .progress {
+      margin-top: 60px;
+      width: 180px;
+      height: 4px;
+      background: rgba(77, 76, 76, 0.151);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(to right, #f3a8a8, #5ce1e6);
+      animation: loading 4.5s ease-in-out forwards; /* sincronizado com o redirect */
+    }
+
+    /* Animações */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes bounce {
+      from { transform: translateY(0); }
+      to { transform: translateY(-25px); }
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    @keyframes titlePop {
+      0% { transform: scale(0.2) rotate(-12deg); opacity: 0; }
+      60% { transform: scale(1.2) rotate(8deg); }
+      100% { transform: scale(1) rotate(0); opacity: 1; }
+    }
+
+    @keyframes subtitleFade {
+      to { opacity: 1; }
+    }
+
+    @keyframes loading {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    /* Corações flutuantes */
+    .heart {
+      position: absolute;
+      font-size: 24px;
+      color: var(--primary-pink);
+      opacity: 0.7;
+      animation: floatHeart linear infinite;
+      z-index: 1;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    @keyframes floatHeart {
+      0% { transform: translateY(120vh) rotate(0deg); opacity: 0; }
+      20% { opacity: 0.9; }
+      100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+    }
+
+    /* Respeito à redução de movimento */
+    @media (prefers-reduced-motion: reduce) {
+      .logo, .title, .subtitle, .progress-bar, .heart {
+        animation: none !important;
+      }
+      .splash {
+        animation: fadeIn 0.5s forwards;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="splash">
+    <img src="imagens/logo_acalantobebe1.png" alt="Logotipo Acalanto Bebê" class="logo">
+    <h1 class="title">Acalanto Bebê</h1>
+    <p class="subtitle">Cuidando com amor 💞</p>
+
+    <div class="progress">
+      <div class="progress-bar"></div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // Criação dos corações flutuantes
+      const hearts = ['', '', '', '', '', ''];
+      
+      function createHeart() {
+        const heart = document.createElement('div');
+        heart.classList.add('heart');
+        heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+        
+        // Estilos aleatórios
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.animationDuration = (Math.random() * 4 + 4) + 's'; // 4 a 8s
+        heart.style.fontSize = (Math.random() * 18 + 20) + 'px'; // 20 a 38px
+        heart.style.opacity = Math.random() * 0.5 + 0.3; // 0.3 a 0.8
+        
+        document.body.appendChild(heart);
+
+        // Remove após o tempo da animação (com pequena margem)
+        setTimeout(() => {
+          if (heart.parentNode) heart.remove();
+        }, 9000);
+      }
+
+      // Intervalo mais suave (30 fps)
+      let heartInterval = setInterval(createHeart, 300);
+
+      // Redireciona após 3.5 segundos para o app principal
+      setTimeout(() => {
+        clearInterval(heartInterval); // para de criar novos corações
+        window.location.href = "principal.html"; // URL real
+      }, 5500);
+
+      // Remove corações antigos quando a página for descarregada (opcional)
+      window.addEventListener('beforeunload', function() {
+        clearInterval(heartInterval);
+      });
+    })();
+  </script>
+</body>
+</html>

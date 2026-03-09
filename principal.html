@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Acalanto Bebê | Registro de Acesso</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+*{box-sizing:border-box;}
+
+body{
+margin:0;
+font-family:'Poppins',sans-serif;
+background-image: linear-gradient(rgba(255,255,255,0.2),rgba(255,255,255,0.2)),url("imagens/fundo08.png");
+background-size:cover;
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:20px;
+}
+
+.container{
+
+width:100%;
+max-width:420px;
+background:white;
+padding:30px;
+border-radius:18px;
+box-shadow:0 10px 40px rgba(0,0,0,0.1);
+
+}
+
+.logo{
+text-align:center;
+margin-bottom:25px;
+}
+
+.logo h1{
+margin:0;
+color:#f3a8a8;
+font-size:26px;
+}
+
+.logo span{
+font-size:13px;
+color:#888;
+}
+
+input,select{
+
+width:100%;
+padding:14px;
+margin-top:12px;
+border-radius:10px;
+border:1px solid #eee;
+font-size:15px;
+background:white;
+
+}
+
+input:focus,select:focus{
+
+outline:none;
+border:1px solid #e8a4af;
+box-shadow:0 0 0 3px rgba(232,164,175,0.15);
+
+}
+
+button{
+
+width:100%;
+padding:15px;
+border:none;
+border-radius:12px;
+font-size:16px;
+font-weight:500;
+margin-top:14px;
+cursor:pointer;
+transition:0.2s;
+
+}
+
+button:active{
+transform:scale(0.97);
+}
+
+.entrada{
+background:#e8a4af;
+color:white;
+}
+
+.saida{
+background:#6b7cff;
+color:white;
+}
+
+.status{
+
+margin-top:20px;
+font-weight:500;
+text-align:center;
+min-height:20px;
+
+}
+
+.loading{
+
+color:#999;
+
+}
+
+.sucesso{
+
+color:#2e9b52;
+
+}
+
+.erro{
+
+color:#d64545;
+
+}
+
+.info{
+margin-top:20px;
+font-size:12px;
+text-align:center;
+color:#999;
+}
+
+.footer{
+margin-top:20px;
+text-align:center;
+font-size:11px;
+color:#bbb;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="logo">
+
+<h1>Acalanto Bebê</h1>
+<span>Registro de Atendimento</span>
+
+</div>
+
+<input id="nome" placeholder="Nome da Profissional Parceira">
+
+<select id="cargo">
+
+<option value="">Selecione o atendimento</option>
+<option value="(Livia)-(Gabriel)">Mãe (Livia) - Bebê (Gabriel)</option>
+<option value="(Mariah)-(Gêmeos)">Mãe (Mariah) - Bebês (Gêmeos)</option>
+<option value="(Mariana)-(Antônio)">Mãe (Mariana) - Bebê (Antônio)</option>
+
+</select>
+
+<button class="entrada" onclick="registrar('Entrada')">
+Início do Serviço
+</button>
+
+<button class="saida" onclick="registrar('Saída')">
+Fim do Serviço
+</button>
+
+<div id="status" class="status"></div>
+
+<div class="info">
+Registro automático com data, hora e localização GPS
+</div>
+
+<div class="footer">
+Sistema interno • Acalanto Bebê
+</div>
+
+</div>
+
+<script>
+
+const API="https://script.google.com/macros/s/AKfycbzvqdCRE_qLfGVbgeUTTEWkxAWPXoHvvUQ9uKUDevAt53V5cWASmRyAbEO_ufzjC88/exec"
+
+let enviando=false
+
+function horaAtual(){
+
+return new Date().toLocaleString("pt-BR")
+
+}
+
+function registrar(tipo){
+
+if(enviando) return
+
+let nome=document.getElementById("nome").value.trim()
+let cargo=document.getElementById("cargo").value
+
+if(nome==""){
+
+alert("Digite seu nome")
+return
+
+}
+
+if(cargo==""){
+
+alert("Selecione o atendimento")
+return
+
+}
+
+let status=document.getElementById("status")
+
+status.className="status loading"
+status.innerHTML="Obtendo localização..."
+
+navigator.geolocation.getCurrentPosition(
+
+pos=>{
+
+let lat=pos.coords.latitude
+let lon=pos.coords.longitude
+
+enviar(nome,cargo,tipo,lat,lon)
+
+},
+
+erro=>{
+
+status.className="status erro"
+status.innerHTML="⚠ Ative o GPS para registrar."
+
+},
+
+{enableHighAccuracy:true}
+
+)
+
+}
+
+function enviar(nome,cargo,tipo,lat,lon){
+
+enviando=true
+
+let status=document.getElementById("status")
+
+status.className="status loading"
+status.innerHTML="Salvando registro..."
+
+fetch(API,{
+
+method:"POST",
+
+body:JSON.stringify({
+
+nome:nome,
+cargo:cargo,
+tipo:tipo,
+data:horaAtual(),
+lat:lat,
+lon:lon
+
+})
+
+})
+
+.then(r=>r.text())
+
+.then(()=>{
+
+status.className="status sucesso"
+status.innerHTML="✔ Registro salvo com sucesso"
+
+enviando=false
+
+})
+
+.catch(()=>{
+
+status.className="status erro"
+status.innerHTML="Erro ao salvar registro"
+
+enviando=false
+
+})
+
+}
+
+/* FULLSCREEN */
+
+function isIOS(){
+
+return /iPad|iPhone|iPod/.test(navigator.userAgent)
+
+}
+
+function entrarFullscreen(){
+
+if(isIOS()) return
+
+const el=document.documentElement
+
+if(el.requestFullscreen){
+
+el.requestFullscreen()
+
+}
+
+}
+
+/* ativa fullscreen no primeiro toque */
+
+document.body.addEventListener("click",entrarFullscreen,{once:true})
+
+</script>
+
+</body>
+</html>
