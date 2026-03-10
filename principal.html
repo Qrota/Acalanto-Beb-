@@ -32,7 +32,8 @@ padding:20px;
 
 width:100%;
 max-width:420px;
-background:white;
+background-image: linear-gradient(rgba(255,255,255,0.2),rgba(255,255,255,0.2)),url("imagens/mae_bebe_acalanto.jpg");
+background-size:cover;
 padding:30px;
 border-radius:18px;
 box-shadow:0 10px 40px rgba(0,0,0,0.1);
@@ -141,8 +142,21 @@ color:#999;
 margin-top:20px;
 text-align:center;
 font-size:11px;
-color:#bbb;
+color:#999;
+
 }
+.footer-logo{
+    display:block;
+    margin:20px auto 0 auto; /* centraliza */
+    width:20px; /* tamanho adequado do logo */
+    height:20px;
+    background-image:url('imagens/logo_acalantobebe1.png');
+    background-size:contain;
+    background-repeat:no-repeat;
+    background-position:center;
+}
+
+  
 
 </style>
 
@@ -186,6 +200,7 @@ Registro automático com data, hora e localização GPS
 
 <div class="footer">
 Sistema interno • Acalanto Bebê
+   <div class="footer-logo"></div>
 </div>
 
 </div>
