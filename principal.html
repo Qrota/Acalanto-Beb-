@@ -10,34 +10,54 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
 
 <title>Acalanto Bebê | Registro de Acesso</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&display=swap" rel="stylesheet">
 <style>
 
 *{box-sizing:border-box;}
 
-body{
-margin:0;
-font-family:'Poppins',sans-serif;
-background-image: linear-gradient(rgba(255,255,255,0.2),rgba(255,255,255,0.2)),url("fundo08.png");
-background-size:cover;
-min-height:100vh;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:20px;
+body {
+    margin: 0;
+    /* Usamos o nome base da família */
+    font-family: 'Lato', sans-serif; 
+    /* 300 é o peso 'Light' da Lato */
+    font-weight: 300; 
+    background-image: linear-gradient(rgba(245, 219, 201, 0.555), rgba(238, 212, 204, 0.562)), url("fundo08.png");
+    background-size: cover;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    /* Melhora a renderização de fontes finas em telas mobile */
+    -webkit-font-smoothing: antialiased; 
 }
 
-.container{
+.container {
+    width: 100%;
+    max-width: 620px;
+    /* Imagem com overlay para garantir contraste */
+    background: 
+        linear-gradient(rgba(248, 242, 235, 0.836), rgba(247, 242, 232, 0.856)), 
+        url("mae_bebe_contorno2.png");
+    background-size: cover;
+    background-position: center;
+    
+    padding: 25px; /* Reduzido levemente para telas menores */
+    border-radius: 16px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    
+    /* Garante que o container não grude nas bordas do celular */
+    margin: 10px; 
+}
 
-width:100%;
-max-width:420px;
-background-image: linear-gradient(rgba(255,255,255,0.2),rgba(255,255,255,0.2)),url("mae_bebe_acalanto.jpg");
-background-size:cover;
-padding:30px;
-border-radius:18px;
-box-shadow:0 10px 40px rgba(0,0,0,0.1);
-
+/* Ajuste fino para celulares muito pequenos (ex: iPhone SE) */
+@media (max-width: 360px) {
+    .container {
+        padding: 20px;
+    }
+    .logo h1 {
+        font-size: 22px;
+    }
 }
 
 .logo{
@@ -46,33 +66,49 @@ margin-bottom:25px;
 }
 
 .logo h1{
+font-weight: 300; 
 margin:0;
 color:#f3a8a8;
-font-size:26px;
+font-size:34px;
 }
 
 .logo span{
-font-size:13px;
+font-size:14px;
 color:#888;
 }
 
 input,select{
 
-width:100%;
-padding:14px;
-margin-top:12px;
-border-radius:10px;
-border:1px solid #eee;
-font-size:15px;
-background:white;
+width: 100%;
+    padding: 12px 25px 12px 5px; /* Aumentei o padding na direita para a seta não sobrepor o texto */
+    margin-top: 18px;
+    border: none;
+    border-bottom: 1px solid #e2c2c2; 
+    background: transparent; 
+    font-family: 'Lato', sans-serif;
+    font-size: 15px;
+    color: #666;
+    border-radius: 0; 
+    
+    /* Remove a seta padrão */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    /* Adiciona a seta fina customizada (SVG de um 'V' minimalista) */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23e2c2c2' stroke-width='1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 5px center;
+    background-size: 18px;
+    
+    cursor: pointer;
 
 }
 
-input:focus,select:focus{
-
-outline:none;
-border:1px solid #e8a4af;
-box-shadow:0 0 0 3px rgba(232,164,175,0.15);
+input:focus, select:focus {
+    outline: none;
+    border-bottom: 1px solid #e8a4af;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23e8a4af' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
 
 }
 
@@ -95,12 +131,12 @@ transform:scale(0.97);
 }
 
 .entrada{
-background:#e8a4af;
+background:#e8a4afb0;
 color:white;
 }
 
 .saida{
-background:#6b7cff;
+background:#6b7cffbe;
 color:white;
 }
 
@@ -133,30 +169,28 @@ color:#d64545;
 
 .info{
 margin-top:20px;
-font-size:12px;
+font-size:13px;
 text-align:center;
 color:#999;
 }
 
 .footer{
-margin-top:20px;
+margin-top:30px;
 text-align:center;
-font-size:11px;
-color:#999;
+font-size: 0.6rem;
+color:#999999a1;
 
 }
 .footer-logo{
     display:block;
-    margin:20px auto 0 auto; /* centraliza */
-    width:20px; /* tamanho adequado do logo */
+    margin:30px auto 0 auto; /* centraliza */
+    width:30px; /* tamanho adequado do logo */
     height:20px;
     background-image:url('logo_acalantobebe1.png');
     background-size:contain;
     background-repeat:no-repeat;
     background-position:center;
 }
-
-  
 
 </style>
 
@@ -200,7 +234,8 @@ Registro automático com data, hora e localização GPS
 
 <div class="footer">
 Sistema interno • Acalanto Bebê
-   <div class="footer-logo"></div>
+    <div class="footer-logo"></div>
+
 </div>
 
 </div>
