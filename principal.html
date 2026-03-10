@@ -1,382 +1,297 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Acalanto Bebê | Registro de Atendimento</title>
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-<title>Acalanto Bebê | Registro de Acesso</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
-
-*{box-sizing:border-box;}
+* { box-sizing: border-box; }
 
 body {
     margin: 0;
-    /* Usamos o nome base da família */
-    font-family: 'Lato', sans-serif; 
-    /* 300 é o peso 'Light' da Lato */
-    font-weight: 300; 
-    background-image: linear-gradient(rgba(245, 219, 201, 0.555), rgba(238, 212, 204, 0.562)), url("fundo08.png");
-    background-size: cover;
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+    background: linear-gradient(rgba(245, 219, 201, 0.6), rgba(238, 212, 204, 0.6)), url("fundo08.png");
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 20px;
-    /* Melhora a renderização de fontes finas em telas mobile */
-    -webkit-font-smoothing: antialiased; 
+    -webkit-font-smoothing: antialiased;
 }
 
 .container {
     width: 100%;
     max-width: 620px;
-    /* Imagem com overlay para garantir contraste */
     background: 
-        linear-gradient(rgba(255, 251, 247, 0.836), rgba(255, 253, 249, 0.856)),
+        linear-gradient(rgba(255, 251, 247, 0.92), rgba(255, 253, 249, 0.92)), 
         url("mae_bebe_contorno2.png");
     background-size: cover;
     background-position: center;
-    
-    padding: 25px; /* Reduzido levemente para telas menores */
-    border-radius: 16px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-    
-    /* Garante que o container não grude nas bordas do celular */
-    margin: 10px; 
+    padding: 30px 25px;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.18);
+    position: relative;
+    overflow: hidden;
 }
 
-/* Ajuste fino para celulares muito pequenos (ex: iPhone SE) */
-@media (max-width: 360px) {
-    .container {
-        padding: 20px;
-    }
-    .logo h1 {
-        font-size: 22px;
-    }
+.logo {
+    text-align: center;
+    margin-bottom: 50px;
 }
-
-.logo{
-text-align:center;
-margin-bottom:25px;
+.logo h1 {
+    font-weight: 300;
+    margin: 0;
+    color: #f3a8a8;
+    font-size: 36px;
 }
-
-.logo h1{
-font-weight: 300; 
-margin:0;
-color:#f3a8a8;
-font-size:34px;
-}
-
-.logo span{
-font-size:14px;
-color:#888;
-}
-
-input,select{
-
-width: 100%;
-    padding: 12px 25px 12px 5px; /* Aumentei o padding na direita para a seta não sobrepor o texto */
-    margin-top: 18px;
-    border: none;
-    border-bottom: 1px solid #e2c2c2; 
-    background: transparent; 
-    font-family: 'Lato', sans-serif;
+.logo span {
     font-size: 15px;
-    color: #666;
-    border-radius: 0; 
-    
-    /* Remove a seta padrão */
+    color: #999;
+    display: block;
+}
+
+/* === CAMPOS === */
+.select-wrapper {
+    position: relative;
+    margin-top: 22px;
+}
+.select-wrapper label {
+    display: block;
+    font-size: 13px;
+    color: #999;
+    margin-bottom: 6px;
+    font-weight: 400;
+}
+
+select, input {
+    width: 100%;
+    padding: 12px 18px;
+    border: 1px solid #e2c2c2;
+    border-radius: 12px;
+    background: white;
+    font-size: 16px;
+    color: #888; /* Ajustado para melhor leitura */
     appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-
-    /* Adiciona a seta fina customizada (SVG de um 'V' minimalista) */
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23e2c2c2' stroke-width='1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23e2c2c2' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 5px center;
-    background-size: 18px;
-    
+    background-position: right 18px center;
     cursor: pointer;
-
 }
-
-input:focus, select:focus {
+select:focus, input:focus {
     outline: none;
-    border-bottom: 1px solid #e8a4af;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23e8a4af' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-
+    border-color: #e8a4af;
+    box-shadow: 0 0 0 3px rgba(232, 164, 175, 0.15);
 }
 
-button{
+/* === BOTÕES === */
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 14px;
+    font-size: 17px;
+    font-weight: 600;
+    margin-top: 18px;
+    cursor: pointer;
+    transition: all 0.25s;
+}
+button:active { transform: scale(0.96); }
 
-width:100%;
-padding:15px;
-border:none;
-border-radius:12px;
-font-size:16px;
-font-weight:500;
-margin-top:14px;
-cursor:pointer;
-transition:0.2s;
-
+.entrada {
+    background: #ffb5c1;
+    color: white;
+}
+.saida {
+    background: #ffc4bc;
+    color: white;
 }
 
-button:active{
-transform:scale(0.97);
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
-.entrada{
-background:#e8a4afb0;
-color:white;
+/* === STATUS === */
+#status {
+    margin-top: 24px;
+    text-align: center;
+    font-size: 15px;
+    min-height: 28px;
+    font-weight: 500;
+}
+.loading { color: #888; }
+.sucesso { color: #2e9b52; }
+.erro { color: #d64545; }
+
+/* === INFO E FOOTER === */
+.info {
+    margin-top: 22px;
+    font-size: 13.5px;
+    text-align: center;
+    color: #888;
+    line-height: 1.4;
 }
 
-.saida{
-background:#6b7cffbe;
-color:white;
+.footer {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 0.75rem;
+    color: #999;
 }
-
-.status{
-
-margin-top:20px;
-font-weight:500;
-text-align:center;
-min-height:20px;
-
+.footer-logo {
+    display: block;
+    margin: 18px auto 0;
+    width: 32px;
+    height: 24px;
+    background: url('logo_acalantobebe1.png') center/contain no-repeat;
+    opacity: 0.6;
 }
-
-.loading{
-
-color:#999;
-
-}
-
-.sucesso{
-
-color:#2e9b52;
-
-}
-
-.erro{
-
-color:#d64545;
-
-}
-
-.info{
-margin-top:20px;
-font-size:13px;
-text-align:center;
-color:#999;
-}
-
-.footer{
-margin-top:30px;
-text-align:center;
-font-size: 0.6rem;
-color:#999999a1;
-
-}
-.footer-logo{
-    display:block;
-    margin:30px auto 0 auto; /* centraliza */
-    width:30px; /* tamanho adequado do logo */
-    height:20px;
-    background-image:url('logo_acalantobebe1.png');
-    background-size:contain;
-    background-repeat:no-repeat;
-    background-position:center;
-}
-
 </style>
-
 </head>
 
 <body>
 
 <div class="container">
 
-<div class="logo">
+    <div class="logo">
+        <h1>Acalanto Bebê</h1>
+        <span>Registro de Atendimento</span>
+    </div>
 
-<h1>Acalanto Bebê</h1>
-<span>Registro de Atendimento</span>
+    <div class="select-wrapper">
+        <label>Nome da Profissional Parceira</label>
+        <input type="text" id="nome" placeholder="Digite seu nome completo">
+    </div>
 
-</div>
+    <div class="select-wrapper">
+        <label>Selecione o atendimento</label>
+        <select id="cargo">
+            <option value="">— Escolha o atendimento —</option>
+            <option value="(Livia)-(Gabriel)">Mãe (Livia) - Bebê (Gabriel)</option>
+            <option value="(Mariah)-(Gêmeos)">Mãe (Mariah) - Bebês (Gêmeos)</option>
+            <option value="(Mariana)-(Antônio)">Mãe (Mariana) - Bebê (Antônio)</option>
+        </select>
+    </div>
 
-<input id="nome" placeholder="Nome da Profissional Parceira">
+    <button id="btnInicio" class="entrada" onclick="iniciarServico()">
+        Início do Serviço
+    </button>
 
-<select id="cargo">
+    <button id="btnFim" class="saida" onclick="finalizarServico()">
+        Fim do Serviço
+    </button>
 
-<option value="">Selecione o atendimento</option>
-<option value="(Livia)-(Gabriel)">Mãe (Livia) - Bebê (Gabriel)</option>
-<option value="(Mariah)-(Gêmeos)">Mãe (Mariah) - Bebês (Gêmeos)</option>
-<option value="(Mariana)-(Antônio)">Mãe (Mariana) - Bebê (Antônio)</option>
+    <div id="status"></div>
 
-</select>
+    <div class="info">
+        Registro automático com data, hora e localização GPS
+    </div>
 
-<button class="entrada" onclick="registrar('Entrada')">
-Início do Serviço
-</button>
-
-<button class="saida" onclick="registrar('Saída')">
-Fim do Serviço
-</button>
-
-<div id="status" class="status"></div>
-
-<div class="info">
-Registro automático com data, hora e localização GPS
-</div>
-
-<div class="footer">
-Sistema interno • Acalanto Bebê
-    <div class="footer-logo"></div>
-
-</div>
-
+    <div class="footer">
+        Sistema interno • Acalanto Bebê
+        <div class="footer-logo"></div>
+    </div>
 </div>
 
 <script>
+const API = "https://script.google.com/macros/s/AKfycbzvqdCRE_qLfGVbgeUTTEWkxAWPXoHvvUQ9uKUDevAt53V5cWASmRyAbEO_ufzjC88/exec";
+let enviando = false;
 
-const API="https://script.google.com/macros/s/AKfycbzvqdCRE_qLfGVbgeUTTEWkxAWPXoHvvUQ9uKUDevAt53V5cWASmRyAbEO_ufzjC88/exec"
-
-let enviando=false
-
-function horaAtual(){
-
-return new Date().toLocaleString("pt-BR")
-
+function horaAtual() {
+    return new Date().toLocaleString("pt-BR", { 
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit', second: '2-digit' 
+    });
 }
 
-function registrar(tipo){
+function registrar(tipo) {
+    if (enviando) return;
 
-if(enviando) return
+    const nome = document.getElementById("nome").value.trim();
+    const cargo = document.getElementById("cargo").value;
 
-let nome=document.getElementById("nome").value.trim()
-let cargo=document.getElementById("cargo").value
+    if (!nome) {
+        alert("Por favor, digite seu nome");
+        return;
+    }
+    if (!cargo) {
+        alert("Selecione o atendimento");
+        return;
+    }
 
-if(nome==""){
+    const statusEl = document.getElementById("status");
+    statusEl.className = "status loading";
+    statusEl.innerHTML = "Obtendo localização GPS...";
 
-alert("Digite seu nome")
-return
-
+    navigator.geolocation.getCurrentPosition(
+        pos => {
+            enviar(nome, cargo, tipo, pos.coords.latitude, pos.coords.longitude);
+        },
+        () => {
+            statusEl.className = "status erro";
+            statusEl.innerHTML = "⚠ Ative o GPS para registrar o atendimento";
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+    );
 }
 
-if(cargo==""){
+function enviar(nome, cargo, tipo, lat, lon) {
+    enviando = true;
+    const statusEl = document.getElementById("status");
+    statusEl.className = "status loading";
+    statusEl.innerHTML = "Salvando registro...";
 
-alert("Selecione o atendimento")
-return
+    fetch(API, {
+        method: "POST",
+        body: JSON.stringify({
+            nome: nome,
+            cargo: cargo,
+            tipo: tipo,
+            data: horaAtual(),
+            lat: lat,
+            lon: lon
+        })
+    })
+    .then(r => r.text())
+    .then(() => {
+        statusEl.className = "status sucesso";
+        statusEl.innerHTML = tipo === "Início" 
+            ? "✔ Serviço iniciado com sucesso!" 
+            : "✔ Serviço finalizado com sucesso!";
 
+        enviando = false;
+        setTimeout(() => { statusEl.innerHTML = ""; }, 5000);
+    })
+    .catch(() => {
+        statusEl.className = "status erro";
+        statusEl.innerHTML = "❌ Erro ao salvar. Tente novamente.";
+        enviando = false;
+    });
 }
 
-let status=document.getElementById("status")
-
-status.className="status loading"
-status.innerHTML="Obtendo localização..."
-
-navigator.geolocation.getCurrentPosition(
-
-pos=>{
-
-let lat=pos.coords.latitude
-let lon=pos.coords.longitude
-
-enviar(nome,cargo,tipo,lat,lon)
-
-},
-
-erro=>{
-
-status.className="status erro"
-status.innerHTML="⚠ Ative o GPS para registrar."
-
-},
-
-{enableHighAccuracy:true}
-
-)
-
+function iniciarServico() {
+    if (confirm("Desejamos um excelente atendimento! Confirma o início do serviço agora?")) {
+        registrar("Início");
+    }
 }
 
-function enviar(nome,cargo,tipo,lat,lon){
-
-enviando=true
-
-let status=document.getElementById("status")
-
-status.className="status loading"
-status.innerHTML="Salvando registro..."
-
-fetch(API,{
-
-method:"POST",
-
-body:JSON.stringify({
-
-nome:nome,
-cargo:cargo,
-tipo:tipo,
-data:horaAtual(),
-lat:lat,
-lon:lon
-
-})
-
-})
-
-.then(r=>r.text())
-
-.then(()=>{
-
-status.className="status sucesso"
-status.innerHTML="✔ Registro salvo com sucesso"
-
-enviando=false
-
-})
-
-.catch(()=>{
-
-status.className="status erro"
-status.innerHTML="Erro ao salvar registro"
-
-enviando=false
-
-})
-
+function finalizarServico() {
+    if (confirm("Parabéns por mais um atendimento realizado com sucesso! Confirma a finalização do serviço agora?")) {
+        registrar("Fim");
+    }
 }
 
-/* FULLSCREEN */
-
-function isIOS(){
-
-return /iPad|iPhone|iPod/.test(navigator.userAgent)
-
+/* Fullscreen */
+function isIOS() { return /iPad|iPhone|iPod/.test(navigator.userAgent); }
+function entrarFullscreen() {
+    if (isIOS()) return;
+    const el = document.documentElement;
+    if (el.requestFullscreen) el.requestFullscreen();
 }
-
-function entrarFullscreen(){
-
-if(isIOS()) return
-
-const el=document.documentElement
-
-if(el.requestFullscreen){
-
-el.requestFullscreen()
-
-}
-
-}
-
-/* ativa fullscreen no primeiro toque */
-
-document.body.addEventListener("click",entrarFullscreen,{once:true})
-
+document.body.addEventListener("click", entrarFullscreen, { once: true });
 </script>
-
 </body>
 </html>
