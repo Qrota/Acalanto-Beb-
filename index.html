@@ -29,15 +29,20 @@
     }
 
     body {
-      font-family: 'Poppins', sans-serif;
-      background-image: linear-gradient(var(--bg-gradient-start), var(--bg-gradient-end)),
-                        url("fundo08.png");
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      position: relative;
+       margin: 0;
+    /* Usamos o nome base da família */
+    font-family: 'Lato', sans-serif; 
+    /* 300 é o peso 'Light' da Lato */
+    font-weight: 300; 
+    background-image: linear-gradient(rgba(245, 219, 201, 0.555), rgba(238, 212, 204, 0.562)), url("imagens/fundo08.png");
+    background-size: cover;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    /* Melhora a renderização de fontes finas em telas mobile */
+    -webkit-font-smoothing: antialiased; 
     }
 
     /* Container principal */
