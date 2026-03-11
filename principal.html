@@ -70,7 +70,7 @@ select, input {
     width: 100%;
     padding: 12px 18px;
     border: 1px solid #e2c2c2;
-    border-radius: 12px;
+    border-radius: 8px;
     background: white;
     font-size: 16px;
     color: #888; /* Ajustado para melhor leitura */
@@ -89,9 +89,9 @@ select:focus, input:focus {
 /* === BOTÕES === */
 button {
     width: 100%;
-    padding: 14px;
+    padding: 12px;
     border: none;
-    border-radius: 14px;
+    border-radius: 8px;
     font-size: 17px;
     font-weight: 600;
     margin-top: 18px;
@@ -101,11 +101,18 @@ button {
 button:active { transform: scale(0.96); }
 
 .entrada {
-    background: #ffb5c1;
+     background: linear-gradient(135deg, #ffb5c1, #ff8a9a);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.4);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.14);
     color: white;
+
 }
 .saida {
-    background: #ffc4bc;
+    background: linear-gradient(135deg, #ffc4bc, #ff9d91);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.4);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.14);
     color: white;
 }
 
