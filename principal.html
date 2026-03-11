@@ -163,7 +163,14 @@ button:disabled {
 
     <div class="select-wrapper">
         <label>Nome da Profissional Parceira</label>
-        <input type="text" id="nome" placeholder="Digite seu nome ">
+        <select id="nome">
+            <option value="">— Selecione seu Nome —</option>
+            <option value="Auricelia">Auricelia Gomes</option>
+            <option value="Jociane">Jociane Batista</option>
+            <option value="Sonia">Sonia Felix </option>
+            <option value="Grazielle">Grazielle Pereira</option>
+            <option value="Nathani">Nathani Reis </option>
+        </select>
     </div>
 
     <div class="select-wrapper">
@@ -210,7 +217,7 @@ function horaAtual() {
 function registrar(tipo) {
     if (enviando) return;
 
-    const nome = document.getElementById("nome").value.trim();
+    const nome = document.getElementById("nome").value;
     const cargo = document.getElementById("cargo").value;
 
     if (!nome) {
