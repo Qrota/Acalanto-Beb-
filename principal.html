@@ -25,10 +25,10 @@ body {
 .container {
     width: 100%;
     max-width: 620px;
-    background: rgba(255,255,255,0.795);
+    background: rgba(255,255,255,0.692);
 
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.4);
+    border: 1px solid rgba(188, 243, 252, 0.575);
 
     padding: 30px 25px;
     border-radius: 12px;
@@ -111,7 +111,6 @@ select:focus, input:focus {
 /* === BOTÕES === */
 button {
     width: 100%;
-    padding: 12px;
     border: none;
     border-radius: 8px;
     font-size: 17px;
@@ -123,7 +122,8 @@ button {
 button:active { transform: scale(0.96); }
 
 .entrada {
-     background: linear-gradient(135deg, #ffb5c1, #ff8a9a);
+    padding: 10px;
+    background: linear-gradient(135deg, #ffb5c1, #ff8a9a);
     backdrop-filter: blur(12px);
     border: 1px solid rgba(255,255,255,0.4);
     box-shadow: 0 20px 40px rgba(0,0,0,0.14);
@@ -131,6 +131,7 @@ button:active { transform: scale(0.96); }
 
 }
 .saida {
+    padding: 10px;
     background: linear-gradient(135deg, #ffc4bc, #ff9d91);
     backdrop-filter: blur(12px);
     border: 1px solid rgba(255,255,255,0.4);
@@ -213,11 +214,11 @@ button:disabled {
     </div>
 
     <button id="btnInicio" class="entrada" onclick="iniciarServico()">
-        Início do Serviço
+        Iníciar Atendimento
     </button>
 
     <button id="btnFim" class="saida" onclick="finalizarServico()">
-        Fim do Serviço
+        Finalizar Atendimento
     </button>
 
     <div id="status"></div>
