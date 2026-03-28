@@ -7,36 +7,30 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
+:root {
+    --bg: #eef0f4;
+    --shadow-light: #ffffff;
+    --shadow-dark: #c9ccd3;
+    --accent: #f3a8a8;
+    --text: #5a5f6a;
+}
+
 * { box-sizing: border-box; }
 
 body {
     margin: 0;
     font-family: 'Lato', sans-serif;
     font-weight: 300;
-    background: linear-gradient(rgba(245, 219, 201, 0.6), rgba(238, 212, 204, 0.6)), url("fundo08.png");
+    background: linear-gradient(#fcd9d999, #a0dcff79),url("fundo08.png");
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 20px;
-    -webkit-font-smoothing: antialiased;
 }
 
-.container {
-    width: 100%;
-    max-width: 620px;
-    background: rgba(255,255,255,0.753);
+/* === CONTAINER === */
 
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(188, 243, 252);
-
-    padding: 30px 25px;
-    border-radius: 12px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-
-    position: relative;
-    overflow: hidden;
-}
 .container::before {
     content: "";
     position: absolute;
@@ -58,89 +52,119 @@ body {
     position: relative;
     z-index: 1;
 }
+.container {
+    width: 100%;
+    max-width: 620px;
+    padding: 30px 25px;
+    border-radius: 10px;
 
+    background: var(--bg);
+    box-shadow: 
+        12px 12px 25px var(--shadow-dark),
+        -12px -12px 25px var(--shadow-light);
+
+    position: relative;
+}
+
+/* === LOGO === */
 .logo {
     text-align: center;
-    margin-bottom: 50px;
+    margin-bottom: 40px;
 }
 .logo h1 {
-    font-weight: 300;
     margin: 0;
-    color: #f3a8a8;
-    font-size: 36px;
+    color: var(--accent);
+    font-weight: 400;
 }
 .logo span {
-    font-size: 15px;
-    color: #999;
-    display: block;
+    font-size: 14px;
+    color: var(--text);
 }
 
 /* === CAMPOS === */
 .select-wrapper {
-    position: relative;
-    margin-top: 22px;
+    margin-top: 18px;
 }
 .select-wrapper label {
-    display: block;
     font-size: 13px;
-    color: #999;
+    color: var(--text);
     margin-bottom: 6px;
-    font-weight: 400;
+    display: block;
 }
 
+/* INPUT NEUMORPHIC (AFUNDADO) */
 select, input {
     width: 100%;
-    padding: 12px 18px;
-    border: 1px solid #e2c2c2;
-    border-radius: 8px;
-    background: white;
-    font-size: 16px;
-    color: #888; /* Ajustado para melhor leitura */
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23e2c2c2' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 18px center;
-    cursor: pointer;
-}
-select:focus, input:focus {
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: none;
     outline: none;
-    border-color: #e8a4af;
-    box-shadow: 0 0 0 3px rgba(232, 164, 175, 0.15);
+    font-size: 15px;
+    color: var(--text);
+
+    background: var(--bg);
+
+    box-shadow:
+        inset 6px 6px 12px var(--shadow-dark),
+        inset -6px -6px 12px var(--shadow-light);
+
+    appearance: none;
+}
+
+/* FOCO */
+select:focus, input:focus {
+    box-shadow:
+        inset 4px 4px 10px var(--shadow-dark),
+        inset -4px -4px 10px var(--shadow-light);
 }
 
 /* === BOTÕES === */
 button {
     width: 100%;
+    padding: 14px;
+    border-radius: 16px;
     border: none;
-    border-radius: 8px;
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 600;
     margin-top: 18px;
     cursor: pointer;
-    transition: all 0.25s;
-}
-button:active { transform: scale(0.96); }
 
+    background: var(--bg);
+    color: var(--text);
+
+    box-shadow:
+        6px 6px 12px var(--shadow-dark),
+        -6px -6px 12px var(--shadow-light);
+
+    transition: all 0.2s ease;
+}
+
+/* HOVER */
+button:hover {
+    transform: translateY(-2px);
+}
+
+/* CLIQUE (AFUNDADO) */
+button:active {
+    box-shadow:
+        inset 4px 4px 10px var(--shadow-dark),
+        inset -4px -4px 10px var(--shadow-light);
+    transform: scale(0.97);
+}
+
+/* VARIAÇÕES */
 .entrada {
-    padding: 10px;
-    background: linear-gradient(135deg, #ffb5c1, #ff8a9a);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.4);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.14);
-    color: white;
-
+    background: hsl(341, 68%, 90%);
+    color: #e07a86;
 }
+
 .saida {
-    padding: 10px;
-    background: linear-gradient(135deg, #ffc4bc, #ff9d91);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.4);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.14);
-    color: white;
+    background: #fcdfd2;
+    color: #ff977d;
 }
 
 button:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
 }
 
@@ -148,23 +172,22 @@ button:disabled {
 #status {
     margin-top: 24px;
     text-align: center;
-    font-size: 15px;
-    min-height: 28px;
+    font-size: 14px;
     font-weight: 500;
 }
 .loading { color: #888; }
-.sucesso { color: #2e9b52; }
-.erro { color: #d64545; }
+.sucesso { color: #4caf50; }
+.erro { color: #e74c3c; }
 
-/* === INFO E FOOTER === */
+/* === INFO === */
 .info {
-    margin-top: 0px;
-    font-size: 13.5px;
+    margin-top: 15px;
+    font-size: 13px;
     text-align: center;
-    color: #888;
-    line-height: 1.4;
+    color: var(--text);
 }
 
+/* === FOOTER === */
 .footer {
     margin-top: 10px;
     text-align: center;
@@ -177,7 +200,7 @@ button:disabled {
     width: 32px;
     height: 24px;
     background: url('logo_acalantobebe1.png') center/contain no-repeat;
-    opacity: 0.6;
+    opacity: 0.5;
 }
 </style>
 </head>
