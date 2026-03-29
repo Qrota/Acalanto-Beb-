@@ -2,7 +2,11 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#f7d2d2">
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Acalanto Bebê | Registro de Atendimento</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
@@ -39,11 +43,12 @@ body {
     font-family: 'Lato', sans-serif;
     font-weight: 300;
     background: #ffffff;
-    min-height: 100vh;
+    height: 100dvh;
+    width: 100%;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
+    align-items: stretch;
+    justify-content: stretch;
+    padding: 0px;
 }
 
 /* === CONTAINER === */
@@ -71,16 +76,25 @@ body {
 }
 .container {
     width: 100%;
-    max-width: 620px;
-    padding: 30px 25px;
-    border-radius: 10px;
+    height: 100dvh; /* ocupa tela inteira */
+
+    padding: 24px 18px;
+
+    border-radius: 0; /* remove efeito card */
 
     background: linear-gradient(#fcd9d979, #a0dcff5e);
-    box-shadow: 
-        12px 12px 25px var(--shadow-dark),
-        -12px -12px 25px var(--shadow-light);
+
+    box-shadow: none; /* remove sombra de card */
 
     position: relative;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    /* SAFE AREA (notch iPhone) */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* === LOGO === */
@@ -236,6 +250,20 @@ button:disabled {
     height: 24px;
     background: url('logo_acalantobebe1.png') center/contain no-repeat;
     opacity: 0.8;
+}
+/* MELHOR USO EM TELAS ALTAS */
+@media (min-height: 700px) {
+    .container {
+        justify-content: center;
+    }
+}
+
+/* TELAS PEQUENAS */
+@media (max-height: 600px) {
+    .container {
+        justify-content: flex-start;
+        padding-top: 20px;
+    }
 }
 </style>
 </head>
