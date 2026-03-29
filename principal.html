@@ -8,20 +8,37 @@
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
 :root {
-    --bg: #eef0f4;
+    --bg: #f0f4f8;
+    --primary: #f7d2d2;
+    --text: #474646;
+    --rosa-forte: #ff6fb7;
     --shadow-light: #ffffff;
-    --shadow-dark: #c9ccd3;
-    --accent: #f3a8a8;
-    --text: #5a5f6a;
+    --shadow-dark: #d1d9e6;
+    
+    /* Novas variáveis para melhor contraste */
+    --btn-entrada-bg: #f7d4df;
+    --btn-entrada-text: #8a414a; /* Tom mais escuro para leitura */
+    --btn-saida-bg: #fcdfd2;
+    --btn-saida-text: #8c4231;   /* Tom mais escuro para leitura */
+    --disabled-bg: #e0e5ec;
+    --disabled-text: #a3b1c6;
 }
 
-* { box-sizing: border-box; }
+/* RESET */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+}
+
 
 body {
     margin: 0;
     font-family: 'Lato', sans-serif;
     font-weight: 300;
-    background: linear-gradient(#fcd9d999, #a0dcff79),url("fundo08.png");
+    background: #ffffff;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -40,11 +57,11 @@ body {
     width: 100%;
     height: 100%;
 
-    background: url("mae_bebe_contorno3.png");
+    background: url("imagens/mae_bebe_contorno3.png");
     background-size: cover;
     background-position: center;
 
-    opacity: 0.10;   /* controla apenas a imagem */
+    opacity: 0.07;   /* controla apenas a imagem */
 
     z-index: 0;
 }
@@ -58,7 +75,7 @@ body {
     padding: 30px 25px;
     border-radius: 10px;
 
-    background: var(--bg);
+    background: linear-gradient(#fcd9d979, #a0dcff5e);
     box-shadow: 
         12px 12px 25px var(--shadow-dark),
         -12px -12px 25px var(--shadow-light);
@@ -73,8 +90,8 @@ body {
 }
 .logo h1 {
     margin: 0;
-    color: var(--accent);
-    font-weight: 400;
+    color: #ffaaaa;
+    font-weight: 300;
 }
 .logo span {
     font-size: 14px;
@@ -86,44 +103,43 @@ body {
     margin-top: 18px;
 }
 .select-wrapper label {
-    font-size: 13px;
-    color: var(--text);
-    margin-bottom: 6px;
     display: block;
+    font-size: 12px;
+    color: #525050;
+    margin-bottom: 6px;
+    font-weight: 400;
 }
 
 /* INPUT NEUMORPHIC (AFUNDADO) */
 select, input {
     width: 100%;
-    padding: 14px 16px;
-    border-radius: 14px;
-    border: none;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid #ffffff;
     outline: none;
-    font-size: 15px;
+    font-size: 16px;
     color: var(--text);
-
     background: var(--bg);
 
-    box-shadow:
-        inset 6px 6px 12px var(--shadow-dark),
-        inset -6px -6px 12px var(--shadow-light);
+    box-shadow: 
+        inset 4px 4px 8px var(--shadow-dark),
+        inset -4px -4px 8px var(--shadow-light);
 
-    appearance: none;
+    transition: 0.2s;
 }
 
-/* FOCO */
 select:focus, input:focus {
-    box-shadow:
-        inset 4px 4px 10px var(--shadow-dark),
-        inset -4px -4px 10px var(--shadow-light);
+    box-shadow: 
+        inset 2px 2px 5px var(--shadow-dark),
+        inset -2px -2px 5px var(--shadow-light);
 }
 
 /* === BOTÕES === */
 button {
     width: 100%;
     padding: 14px;
-    border-radius: 16px;
-    border: none;
+    border-radius: 12px;
+    border: 1px solid #ffffff;
     font-size: 16px;
     font-weight: 600;
     margin-top: 18px;
@@ -138,7 +154,26 @@ button {
 
     transition: all 0.2s ease;
 }
+/* ESTADO DESATIVADO VISUAL */
+button:disabled {
+    background: var(--disabled-bg) !important;
+    color: var(--disabled-text) !important;
+    box-shadow: none !important;
+    transform: none !important;
+    opacity: 1; /* importante para não ficar transparente demais */
+    cursor: not-allowed;
+}
 
+/* ESTADO ATIVO FORTE */
+.entrada.ativo {
+    background: linear-gradient(135deg, #fcbfd1, #fdb9ca);
+    color: #fff;
+}
+
+.saida.ativo {
+    background: linear-gradient(135deg, #ffb38a, #f59670);
+    color: #fff;
+}
 /* HOVER */
 button:hover {
     transform: translateY(-2px);
@@ -154,13 +189,13 @@ button:active {
 
 /* VARIAÇÕES */
 .entrada {
-    background: hsl(341, 68%, 90%);
+    background: #f7d4df;
     color: #e07a86;
 }
+.entrada:active {
+    background: #e4e4e4;
+    color:#aca9a8;
 
-.saida {
-    background: #fcdfd2;
-    color: #ff977d;
 }
 
 button:disabled {
@@ -192,15 +227,15 @@ button:disabled {
     margin-top: 10px;
     text-align: center;
     font-size: 0.75rem;
-    color: #999;
+    color: #5c5b5b;
 }
 .footer-logo {
     display: block;
     margin: 18px auto 0;
     width: 32px;
     height: 24px;
-    background: url('logo_acalantobebe1.png') center/contain no-repeat;
-    opacity: 0.5;
+    background: url('imagens/logo_acalantobebe1.png') center/contain no-repeat;
+    opacity: 0.8;
 }
 </style>
 </head>
@@ -217,7 +252,7 @@ button:disabled {
     <div class="select-wrapper">
         <label>Nome da Profissional Parceira</label>
         <select id="nome">
-            <option value="">— Selecione seu Nome —</option>
+            <option value="">— Selecione —</option>
             <option value="Auricelia">Auricelia Gomes</option>
             <option value="Jociane">Jociane Batista</option>
             <option value="Sonia">Sonia Felix </option>
@@ -229,7 +264,7 @@ button:disabled {
     <div class="select-wrapper">
         <label>Selecione o atendimento</label>
         <select id="cargo">
-            <option value="">— Escolha o atendimento —</option>
+            <option value="">— Selecione —</option>
             <option value="(Livia)-(Gabriel)">Mãe (Livia) - Bebê (Gabriel)</option>
             <option value="(Mariah)-(Gêmeos)">Mãe (Mariah) - Bebês (Gêmeos)</option>
             <option value="(Mariana)-(Antônio)">Mãe (Mariana) - Bebê (Antônio)</option>
@@ -260,6 +295,35 @@ button:disabled {
 const API = "https://script.google.com/macros/s/AKfycbzvqdCRE_qLfGVbgeUTTEWkxAWPXoHvvUQ9uKUDevAt53V5cWASmRyAbEO_ufzjC88/exec";
 let enviando = false;
 
+// Seleção dos elementos para controle de estado
+const btnIniciar = document.querySelector('.entrada');
+const btnFinalizar = document.querySelector('.saida');
+const campoNome = document.getElementById("nome");
+const campoCargo = document.getElementById("cargo");
+
+// --- LÓGICA DE ESTADO INICIAL ---
+btnFinalizar.disabled = true;
+btnFinalizar.classList.remove("ativo");
+btnIniciar.classList.add("ativo"); // Começa bloqueado
+validarCampos(); // Valida se já há algo preenchido (ex: preenchimento automático)
+
+// Ouvintes para validar os campos enquanto o usuário digita/seleciona
+campoNome.addEventListener('input', validarCampos);
+campoCargo.addEventListener('change', validarCampos);
+
+function validarCampos() {
+    // O botão iniciar só habilita se:
+    // 1. Nome e Cargo estiverem preenchidos
+    // 2. O serviço ainda NÃO foi iniciado (btnFinalizar ainda está desativado)
+    const camposOk = campoNome.value.trim() !== "" && campoCargo.value !== "";
+    
+    if (camposOk && btnFinalizar.disabled) {
+        btnIniciar.disabled = false;
+    } else {
+        btnIniciar.disabled = true;
+    }
+}
+
 function horaAtual() {
     return new Date().toLocaleString("pt-BR", { 
         day: '2-digit', month: '2-digit', year: 'numeric',
@@ -270,15 +334,11 @@ function horaAtual() {
 function registrar(tipo) {
     if (enviando) return;
 
-    const nome = document.getElementById("nome").value;
-    const cargo = document.getElementById("cargo").value;
+    const nome = campoNome.value;
+    const cargo = campoCargo.value;
 
-    if (!nome) {
-        alert("Por favor, digite seu nome");
-        return;
-    }
-    if (!cargo) {
-        alert("Selecione o atendimento");
+    if (!nome || !cargo) {
+        alert("Por favor, preencha todos os campos antes de prosseguir.");
         return;
     }
 
@@ -321,6 +381,31 @@ function enviar(nome, cargo, tipo, lat, lon) {
         statusEl.innerHTML = tipo === "Início" 
             ? "✔ Serviço iniciado com sucesso!" 
             : "✔ Serviço finalizado com sucesso!";
+
+        // --- LÓGICA DE ALTERNÂNCIA DE BOTÕES APÓS SUCESSO ---
+        if (tipo === "Início") {
+
+    // Iniciar desliga
+    btnIniciar.disabled = true;
+    btnIniciar.classList.remove("ativo");
+
+    // Finalizar liga
+    btnFinalizar.disabled = false;
+    btnFinalizar.classList.add("ativo");
+
+} else {
+
+    // Finalizar desliga
+    btnFinalizar.disabled = true;
+    btnFinalizar.classList.remove("ativo");
+
+    // Iniciar volta ao normal
+    campoNome.value = "";
+    campoCargo.value = "";
+
+    validarCampos(); // reativa se válido
+
+}
 
         enviando = false;
         setTimeout(() => { statusEl.innerHTML = ""; }, 5000);
