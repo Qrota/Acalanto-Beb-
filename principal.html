@@ -82,7 +82,7 @@ body {
 
     border-radius: 0; /* remove efeito card */
 
-    background: linear-gradient(#fcd9d979, #a0dcff5e);
+    background: linear-gradient(#fcd9d9c4, #a0dcffc5);
 
     box-shadow: none; /* remove sombra de card */
 
@@ -104,7 +104,7 @@ body {
 }
 .logo h1 {
     margin: 0;
-    color: #ffaaaa;
+    color: #ff9e9e;
     font-weight: 300;
 }
 .logo span {
@@ -164,7 +164,7 @@ button {
 
     box-shadow:
         6px 6px 12px var(--shadow-dark),
-        -6px -6px 12px var(--shadow-light);
+        -6px -6px 12px #888;
 
     transition: all 0.2s ease;
 }
@@ -185,7 +185,7 @@ button:disabled {
 }
 
 .saida.ativo {
-    background: linear-gradient(135deg, #ffb38a, #f59670);
+    background: linear-gradient(135deg, #f8bda2, #faae7b);
     color: #fff;
 }
 /* HOVER */
@@ -219,7 +219,7 @@ button:disabled {
 
 /* === STATUS === */
 #status {
-    margin-top: 24px;
+    margin-top: 50px;
     text-align: center;
     font-size: 14px;
     font-weight: 500;
@@ -318,33 +318,72 @@ button:disabled {
         <div class="footer-logo"></div>
     </div>
 </div>
-
 <script>
 const API = "https://script.google.com/macros/s/AKfycbzvqdCRE_qLfGVbgeUTTEWkxAWPXoHvvUQ9uKUDevAt53V5cWASmRyAbEO_ufzjC88/exec";
 let enviando = false;
 
-// Seleção dos elementos para controle de estado
+const STORAGE_KEY = "acalanto_estado";
+
+// 🔹 Seleção dos elementos
 const btnIniciar = document.querySelector('.entrada');
 const btnFinalizar = document.querySelector('.saida');
 const campoNome = document.getElementById("nome");
 const campoCargo = document.getElementById("cargo");
 
-// --- LÓGICA DE ESTADO INICIAL ---
+// 🔹 SALVAR ESTADO
+function salvarEstado() {
+    const estado = {
+        nome: campoNome.value,
+        cargo: campoCargo.value,
+        emAtendimento: !btnFinalizar.disabled
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(estado));
+}
+
+// 🔹 RESTAURAR ESTADO
+function restaurarEstado() {
+    const dados = localStorage.getItem(STORAGE_KEY);
+    if (!dados) return;
+
+    const estado = JSON.parse(dados);
+
+    campoNome.value = estado.nome || "";
+    campoCargo.value = estado.cargo || "";
+
+    if (estado.emAtendimento) {
+        btnIniciar.disabled = true;
+        btnIniciar.classList.remove("ativo");
+
+        btnFinalizar.disabled = false;
+        btnFinalizar.classList.add("ativo");
+    } else {
+        validarCampos();
+    }
+}
+
+// 🔹 ESTADO INICIAL PADRÃO
 btnFinalizar.disabled = true;
 btnFinalizar.classList.remove("ativo");
-btnIniciar.classList.add("ativo"); // Começa bloqueado
-validarCampos(); // Valida se já há algo preenchido (ex: preenchimento automático)
+btnIniciar.classList.add("ativo");
 
-// Ouvintes para validar os campos enquanto o usuário digita/seleciona
-campoNome.addEventListener('input', validarCampos);
-campoCargo.addEventListener('change', validarCampos);
+// 🔹 RESTAURA DEPOIS DE DEFINIR TUDO
+restaurarEstado();
 
+// 🔹 EVENTOS
+campoNome.addEventListener('input', () => {
+    validarCampos();
+    salvarEstado();
+});
+
+campoCargo.addEventListener('change', () => {
+    validarCampos();
+    salvarEstado();
+});
+
+// 🔹 VALIDAÇÃO
 function validarCampos() {
-    // O botão iniciar só habilita se:
-    // 1. Nome e Cargo estiverem preenchidos
-    // 2. O serviço ainda NÃO foi iniciado (btnFinalizar ainda está desativado)
     const camposOk = campoNome.value.trim() !== "" && campoCargo.value !== "";
-    
+
     if (camposOk && btnFinalizar.disabled) {
         btnIniciar.disabled = false;
     } else {
@@ -352,6 +391,7 @@ function validarCampos() {
     }
 }
 
+// 🔹 HORA
 function horaAtual() {
     return new Date().toLocaleString("pt-BR", { 
         day: '2-digit', month: '2-digit', year: 'numeric',
@@ -359,6 +399,7 @@ function horaAtual() {
     });
 }
 
+// 🔹 REGISTRO
 function registrar(tipo) {
     if (enviando) return;
 
@@ -386,6 +427,7 @@ function registrar(tipo) {
     );
 }
 
+// 🔹 ENVIO
 function enviar(nome, cargo, tipo, lat, lon) {
     enviando = true;
     const statusEl = document.getElementById("status");
@@ -395,12 +437,12 @@ function enviar(nome, cargo, tipo, lat, lon) {
     fetch(API, {
         method: "POST",
         body: JSON.stringify({
-            nome: nome,
-            cargo: cargo,
-            tipo: tipo,
+            nome,
+            cargo,
+            tipo,
             data: horaAtual(),
-            lat: lat,
-            lon: lon
+            lat,
+            lon
         })
     })
     .then(r => r.text())
@@ -410,30 +452,26 @@ function enviar(nome, cargo, tipo, lat, lon) {
             ? "✔ Serviço iniciado com sucesso!" 
             : "✔ Serviço finalizado com sucesso!";
 
-        // --- LÓGICA DE ALTERNÂNCIA DE BOTÕES APÓS SUCESSO ---
         if (tipo === "Início") {
+            btnIniciar.disabled = true;
+            btnIniciar.classList.remove("ativo");
 
-    // Iniciar desliga
-    btnIniciar.disabled = true;
-    btnIniciar.classList.remove("ativo");
+            btnFinalizar.disabled = false;
+            btnFinalizar.classList.add("ativo");
 
-    // Finalizar liga
-    btnFinalizar.disabled = false;
-    btnFinalizar.classList.add("ativo");
+        } else {
+            btnFinalizar.disabled = true;
+            btnFinalizar.classList.remove("ativo");
 
-} else {
+            campoNome.value = "";
+            campoCargo.value = "";
 
-    // Finalizar desliga
-    btnFinalizar.disabled = true;
-    btnFinalizar.classList.remove("ativo");
+            localStorage.removeItem(STORAGE_KEY); // 🔥 limpa só aqui
 
-    // Iniciar volta ao normal
-    campoNome.value = "";
-    campoCargo.value = "";
+            validarCampos();
+        }
 
-    validarCampos(); // reativa se válido
-
-}
+        salvarEstado(); // 🔥 salva estado atualizado
 
         enviando = false;
         setTimeout(() => { statusEl.innerHTML = ""; }, 5000);
@@ -445,6 +483,7 @@ function enviar(nome, cargo, tipo, lat, lon) {
     });
 }
 
+// 🔹 AÇÕES
 function iniciarServico() {
     if (confirm("Desejamos um excelente atendimento! Confirma o início do serviço agora?")) {
         registrar("Início");
@@ -457,7 +496,7 @@ function finalizarServico() {
     }
 }
 
-/* Fullscreen */
+// 🔹 FULLSCREEN
 function isIOS() { return /iPad|iPhone|iPod/.test(navigator.userAgent); }
 function entrarFullscreen() {
     if (isIOS()) return;
@@ -465,6 +504,7 @@ function entrarFullscreen() {
     if (el.requestFullscreen) el.requestFullscreen();
 }
 document.body.addEventListener("click", entrarFullscreen, { once: true });
+
 </script>
 </body>
 </html>
