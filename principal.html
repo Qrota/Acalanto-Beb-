@@ -498,38 +498,32 @@ function finalizarServico() {
 }
 
 // Ativa o modo fullscreen com suporte a diferentes navegadores
-function entrarFullscreen() {
-  if (isIOS()) {
-    console.warn("Fullscreen bloqueado no iOS.");
-    return;
-  }
+function isIOS() {
+  return /iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
 
+function entrarFullscreen() {
   const elemento = document.documentElement;
 
-  try {
-    if (elemento.requestFullscreen) {
-      elemento.requestFullscreen();
-    } else if (elemento.mozRequestFullScreen) { // Firefox
-      elemento.mozRequestFullScreen();
-    } else if (elemento.webkitRequestFullscreen) { // Safari
-      elemento.webkitRequestFullscreen();
-    } else if (elemento.msRequestFullscreen) { // IE/Edge
-      elemento.msRequestFullscreen();
-    } else {
-      console.warn("Fullscreen não suportado neste navegador.");
-    }
-  } catch (e) {
-    console.error("Erro ao tentar entrar em fullscreen:", e);
+  if (elemento.requestFullscreen) {
+    elemento.requestFullscreen();
+  } else if (elemento.webkitRequestFullscreen) {
+    elemento.webkitRequestFullscreen();
+  } else if (elemento.msRequestFullscreen) {
+    elemento.msRequestFullscreen();
   }
 }
 
-// Configura eventos para ativar fullscreen (exceto em iOS)
-if (!isIOS()) {
-  window.addEventListener('load', entrarFullscreen);
-  document.addEventListener('click', entrarFullscreen);
-  document.addEventListener('touchstart', entrarFullscreen);
-  document.addEventListener('keypress', entrarFullscreen);
-}
+let fullscreenAtivado = false;
+
+document.addEventListener('click', () => {
+  if (fullscreenAtivado) return;
+
+  if (!isIOS()) {
+    entrarFullscreen();
+    fullscreenAtivado = true;
+  }
+});
 
 
 </script>
