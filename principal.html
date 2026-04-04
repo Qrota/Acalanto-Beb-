@@ -497,14 +497,40 @@ function finalizarServico() {
     }
 }
 
-// 🔹 FULLSCREEN
-function isIOS() { return /iPad|iPhone|iPod/.test(navigator.userAgent); }
+// Ativa o modo fullscreen com suporte a diferentes navegadores
 function entrarFullscreen() {
-    if (isIOS()) return;
-    const el = document.documentElement;
-    if (el.requestFullscreen) el.requestFullscreen();
+  if (isIOS()) {
+    console.warn("Fullscreen bloqueado no iOS.");
+    return;
+  }
+
+  const elemento = document.documentElement;
+
+  try {
+    if (elemento.requestFullscreen) {
+      elemento.requestFullscreen();
+    } else if (elemento.mozRequestFullScreen) { // Firefox
+      elemento.mozRequestFullScreen();
+    } else if (elemento.webkitRequestFullscreen) { // Safari
+      elemento.webkitRequestFullscreen();
+    } else if (elemento.msRequestFullscreen) { // IE/Edge
+      elemento.msRequestFullscreen();
+    } else {
+      console.warn("Fullscreen não suportado neste navegador.");
+    }
+  } catch (e) {
+    console.error("Erro ao tentar entrar em fullscreen:", e);
+  }
 }
-document.body.addEventListener("click", entrarFullscreen, { once: true });
+
+// Configura eventos para ativar fullscreen (exceto em iOS)
+if (!isIOS()) {
+  window.addEventListener('load', entrarFullscreen);
+  document.addEventListener('click', entrarFullscreen);
+  document.addEventListener('touchstart', entrarFullscreen);
+  document.addEventListener('keypress', entrarFullscreen);
+}
+
 
 </script>
 </body>
