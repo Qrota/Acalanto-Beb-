@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="theme-color" content="#f7d2d2">
-<link rel="icon" href="logo_acalantobebe1.png" type="image/x-icon">    
 <link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -29,7 +28,6 @@
     --disabled-text: #a3b1c6;
 }
 
-/* RESET */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -38,18 +36,13 @@
     font-weight: 300;
 }
 
-
 body {
-    margin: 0;
-    font-family: 'Lato', sans-serif;
-    font-weight: 300;
     background: #ffffff;
     height: 100dvh;
     width: 100%;
     display: flex;
     align-items: stretch;
     justify-content: stretch;
-    padding: 0px;
 }
 
 /* === CONTAINER === */
@@ -175,7 +168,7 @@ button:disabled {
     color: var(--disabled-text) !important;
     box-shadow: none !important;
     transform: none !important;
-    opacity: 1; /* importante para não ficar transparente demais */
+    opacity: 0.7; /* Consistência visual para desabilitado */
     cursor: not-allowed;
 }
 
@@ -189,13 +182,14 @@ button:disabled {
     background: linear-gradient(135deg, #f8bda2, #faae7b);
     color: #fff;
 }
+
 /* HOVER */
-button:hover {
+button:hover:not(:disabled) {
     transform: translateY(-2px);
 }
 
 /* CLIQUE (AFUNDADO) */
-button:active {
+button:active:not(:disabled) {
     box-shadow:
         inset 4px 4px 10px var(--shadow-dark),
         inset -4px -4px 10px var(--shadow-light);
@@ -204,18 +198,13 @@ button:active {
 
 /* VARIAÇÕES */
 .entrada {
-    background: #f7d4df;
-    color: #e07a86;
-}
-.entrada:active {
-    background: #e4e4e4;
-    color:#aca9a8;
-
+    background: var(--btn-entrada-bg);
+    color: var(--btn-entrada-text);
 }
 
-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+.saida {
+    background: var(--btn-saida-bg);
+    color: var(--btn-saida-text);
 }
 
 /* === STATUS === */
@@ -279,7 +268,7 @@ button:disabled {
     </div>
 
     <div class="select-wrapper">
-        <label>Nome da Profissional Parceira</label>
+        <label for="nome">Nome da Profissional Parceira</label>
         <select id="nome">
             <option value="">— Selecione —</option>
             <option value="Auricelia">Auricelia Gomes</option>
@@ -291,7 +280,7 @@ button:disabled {
     </div>
 
     <div class="select-wrapper">
-        <label>Selecione o atendimento</label>
+        <label for="cargo">Selecione o atendimento</label>
         <select id="cargo">
             <option value="">— Selecione —</option>
             <option value="(Livia)-(Gabriel)">Mãe (Livia) - Bebê (Gabriel)</option>
@@ -308,7 +297,7 @@ button:disabled {
         Finalizar Atendimento
     </button>
 
-    <div id="status"></div>
+    <div id="status" aria-live="polite"></div>
 
     <div class="info">
         Registro automático com data, hora e localização GPS
@@ -321,15 +310,17 @@ button:disabled {
 </div>
 <script>
 const API = "https://script.google.com/macros/s/AKfycbzvqdCRE_qLfGVbgeUTTEWkxAWPXoHvvUQ9uKUDevAt53V5cWASmRyAbEO_ufzjC88/exec";
-let enviando = false;
-
 const STORAGE_KEY = "acalanto_estado";
 
-// 🔹 Seleção dos elementos
-const btnIniciar = document.querySelector('.entrada');
-const btnFinalizar = document.querySelector('.saida');
-const campoNome = document.getElementById("nome");
-const campoCargo = document.getElementById("cargo");
+// 🔹 Seleção e Cache de Elementos
+const doc = document;
+const btnIniciar = doc.getElementById('btnInicio');
+const btnFinalizar = doc.getElementById('btnFim');
+const campoNome = doc.getElementById("nome");
+const campoCargo = doc.getElementById("cargo");
+const statusEl = doc.getElementById("status");
+
+let enviando = false;
 
 // 🔹 SALVAR ESTADO
 function salvarEstado() {
@@ -343,52 +334,49 @@ function salvarEstado() {
 
 // 🔹 RESTAURAR ESTADO
 function restaurarEstado() {
-    const dados = localStorage.getItem(STORAGE_KEY);
-    if (!dados) return;
+    try {
+        const dados = localStorage.getItem(STORAGE_KEY);
+        if (!dados) {
+            setupEstadoInicial();
+            return;
+        }
 
-    const estado = JSON.parse(dados);
+        const estado = JSON.parse(dados);
+        campoNome.value = estado.nome || "";
+        campoCargo.value = estado.cargo || "";
 
-    campoNome.value = estado.nome || "";
-    campoCargo.value = estado.cargo || "";
-
-    if (estado.emAtendimento) {
-        btnIniciar.disabled = true;
-        btnIniciar.classList.remove("ativo");
-
-        btnFinalizar.disabled = false;
-        btnFinalizar.classList.add("ativo");
-    } else {
-        validarCampos();
+        if (estado.emAtendimento) {
+            setModoAtendimento(true);
+        } else {
+            setupEstadoInicial();
+            validarCampos();
+        }
+    } catch (e) {
+        console.error("Erro ao restaurar estado:", e);
+        setupEstadoInicial();
     }
 }
 
-// 🔹 ESTADO INICIAL PADRÃO
-btnFinalizar.disabled = true;
-btnFinalizar.classList.remove("ativo");
-btnIniciar.classList.add("ativo");
+// 🔹 AUXILIARES DE ESTADO
+function setModoAtendimento(ativo) {
+    btnIniciar.disabled = ativo;
+    btnIniciar.classList.toggle("ativo", !ativo);
+    btnFinalizar.disabled = !ativo;
+    btnFinalizar.classList.toggle("ativo", ativo);
+}
 
-// 🔹 RESTAURA DEPOIS DE DEFINIR TUDO
-restaurarEstado();
-
-// 🔹 EVENTOS
-campoNome.addEventListener('input', () => {
-    validarCampos();
-    salvarEstado();
-});
-
-campoCargo.addEventListener('change', () => {
-    validarCampos();
-    salvarEstado();
-});
+function setupEstadoInicial() {
+    btnFinalizar.disabled = true;
+    btnFinalizar.classList.remove("ativo");
+    btnIniciar.classList.add("ativo");
+}
 
 // 🔹 VALIDAÇÃO
 function validarCampos() {
     const camposOk = campoNome.value.trim() !== "" && campoCargo.value !== "";
-
-    if (camposOk && btnFinalizar.disabled) {
-        btnIniciar.disabled = false;
-    } else {
-        btnIniciar.disabled = true;
+    // Só habilita o Início se campos estiverem OK e NÃO estiver em atendimento
+    if (btnFinalizar.disabled) {
+        btnIniciar.disabled = !camposOk;
     }
 }
 
@@ -412,7 +400,6 @@ function registrar(tipo) {
         return;
     }
 
-    const statusEl = document.getElementById("status");
     statusEl.className = "status loading";
     statusEl.innerHTML = "Obtendo localização GPS...";
 
@@ -420,68 +407,56 @@ function registrar(tipo) {
         pos => {
             enviar(nome, cargo, tipo, pos.coords.latitude, pos.coords.longitude);
         },
-        () => {
+        error => {
+            console.error("Erro GPS:", error);
             statusEl.className = "status erro";
             statusEl.innerHTML = "⚠ Ative o GPS para registrar o atendimento";
         },
-        { enableHighAccuracy: true, timeout: 10000 }
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
 }
 
 // 🔹 ENVIO
-function enviar(nome, cargo, tipo, lat, lon) {
+async function enviar(nome, cargo, tipo, lat, lon) {
     enviando = true;
-    const statusEl = document.getElementById("status");
     statusEl.className = "status loading";
     statusEl.innerHTML = "Salvando registro...";
 
-    fetch(API, {
-        method: "POST",
-        body: JSON.stringify({
-            nome,
-            cargo,
-            tipo,
-            data: horaAtual(),
-            lat,
-            lon
-        })
-    })
-    .then(r => r.text())
-    .then(() => {
+    try {
+        await fetch(API, {
+            method: "POST",
+            body: JSON.stringify({
+                nome, cargo, tipo,
+                data: horaAtual(),
+                lat, lon
+            })
+        });
+
+        // Como não havia tratamento específico do corpo da resposta no original, assumimos sucesso ao resolver a promessa
         statusEl.className = "status sucesso";
         statusEl.innerHTML = tipo === "Início" 
             ? "✔ Serviço iniciado com sucesso!" 
             : "✔ Serviço finalizado com sucesso!";
 
         if (tipo === "Início") {
-            btnIniciar.disabled = true;
-            btnIniciar.classList.remove("ativo");
-
-            btnFinalizar.disabled = false;
-            btnFinalizar.classList.add("ativo");
-
+            setModoAtendimento(true);
         } else {
-            btnFinalizar.disabled = true;
-            btnFinalizar.classList.remove("ativo");
-
+            setModoAtendimento(false);
             campoNome.value = "";
             campoCargo.value = "";
-
-            localStorage.removeItem(STORAGE_KEY); // 🔥 limpa só aqui
-
+            localStorage.removeItem(STORAGE_KEY);
             validarCampos();
         }
 
-        salvarEstado(); // 🔥 salva estado atualizado
-
-        enviando = false;
+        salvarEstado();
         setTimeout(() => { statusEl.innerHTML = ""; }, 5000);
-    })
-    .catch(() => {
+    } catch (error) {
+        console.error("Erro no envio:", error);
         statusEl.className = "status erro";
-        statusEl.innerHTML = "❌ Erro ao salvar. Tente novamente.";
+        statusEl.innerHTML = "❌ Erro ao salvar. Verifique sua conexão.";
+    } finally {
         enviando = false;
-    });
+    }
 }
 
 // 🔹 AÇÕES
@@ -497,34 +472,28 @@ function finalizarServico() {
     }
 }
 
-// Ativa o modo fullscreen com suporte a diferentes navegadores
-function isIOS() {
-  return /iPhone|iPad|iPod/i.test(navigator.userAgent);
-}
-
+// 🔹 PWA & FULLSCREEN
 function entrarFullscreen() {
-  const elemento = document.documentElement;
-
-  if (elemento.requestFullscreen) {
-    elemento.requestFullscreen();
-  } else if (elemento.webkitRequestFullscreen) {
-    elemento.webkitRequestFullscreen();
-  } else if (elemento.msRequestFullscreen) {
-    elemento.msRequestFullscreen();
-  }
+    if (/iPad|iPhone|iPod/.test(navigator.userAgent)) return;
+    const el = document.documentElement;
+    if (el.requestFullscreen) el.requestFullscreen();
 }
 
-let fullscreenAtivado = false;
+// Inicialização
+doc.addEventListener('DOMContentLoaded', () => {
+    restaurarEstado();
 
-document.addEventListener('click', () => {
-  if (fullscreenAtivado) return;
+    campoNome.addEventListener('input', () => { validarCampos(); salvarEstado(); });
+    campoCargo.addEventListener('change', () => { validarCampos(); salvarEstado(); });
+    doc.body.addEventListener("click", entrarFullscreen, { once: true });
 
-  if (!isIOS()) {
-    entrarFullscreen();
-    fullscreenAtivado = true;
-  }
+    // Registro do Service Worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+            .then(reg => console.log('Service Worker registrado:', reg.scope))
+            .catch(err => console.log('Erro ao registrar Service Worker:', err));
+    }
 });
-
 
 </script>
 </body>
