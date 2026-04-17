@@ -284,11 +284,12 @@ button:active:not(:disabled) {
         <div class="footer-logo"></div>
     </div>
 </div>
+
+
 <script>
 const API = "https://script.google.com/macros/s/AKfycbzvqdCRE_qLfGVbgeUTTEWkxAWPXoHvvUQ9uKUDevAt53V5cWASmRyAbEO_ufzjC88/exec";
 const STORAGE_KEY = "acalanto_estado";
 
-// 🔹 Seleção e Cache de Elementos
 const doc = document;
 const btnIniciar = doc.getElementById('btnInicio');
 const btnFinalizar = doc.getElementById('btnFim');
@@ -297,6 +298,13 @@ const campoCargo = doc.getElementById("cargo");
 const statusEl = doc.getElementById("status");
 
 let enviando = false;
+
+// 🔹 CONFIG GPS OTIMIZADA
+const GEO_OPTIONS = {
+    enableHighAccuracy: false,
+    timeout: 20000,
+    maximumAge: 60000
+};
 
 // 🔹 SALVAR ESTADO
 function salvarEstado() {
@@ -312,10 +320,7 @@ function salvarEstado() {
 function restaurarEstado() {
     try {
         const dados = localStorage.getItem(STORAGE_KEY);
-        if (!dados) {
-            setupEstadoInicial();
-            return;
-        }
+        if (!dados) return setupEstadoInicial();
 
         const estado = JSON.parse(dados);
         campoNome.value = estado.nome || "";
@@ -327,13 +332,12 @@ function restaurarEstado() {
             setupEstadoInicial();
             validarCampos();
         }
-    } catch (e) {
-        console.error("Erro ao restaurar estado:", e);
+    } catch {
         setupEstadoInicial();
     }
 }
 
-// 🔹 AUXILIARES DE ESTADO
+// 🔹 ESTADO UI
 function setModoAtendimento(ativo) {
     btnIniciar.disabled = ativo;
     btnIniciar.classList.toggle("ativo", !ativo);
@@ -343,75 +347,106 @@ function setModoAtendimento(ativo) {
 
 function setupEstadoInicial() {
     btnFinalizar.disabled = true;
-    btnFinalizar.classList.remove("ativo");
     btnIniciar.classList.add("ativo");
 }
 
 // 🔹 VALIDAÇÃO
 function validarCampos() {
-    const camposOk = campoNome.value.trim() !== "" && campoCargo.value !== "";
-    // Só habilita o Início se campos estiverem OK e NÃO estiver em atendimento
+    const ok = campoNome.value && campoCargo.value;
     if (btnFinalizar.disabled) {
-        btnIniciar.disabled = !camposOk;
+        btnIniciar.disabled = !ok;
     }
 }
 
 // 🔹 HORA
 function horaAtual() {
-    return new Date().toLocaleString("pt-BR", { 
-        day: '2-digit', month: '2-digit', year: 'numeric',
-        hour: '2-digit', minute: '2-digit', second: '2-digit' 
+    return new Date().toLocaleString("pt-BR");
+}
+
+// 🔹 GPS COM RETRY + FALLBACK
+function obterLocalizacao() {
+    return new Promise((resolve) => {
+        let tentou = false;
+
+        function tentar() {
+            navigator.geolocation.getCurrentPosition(
+                pos => {
+                    resolve({
+                        lat: pos.coords.latitude,
+                        lon: pos.coords.longitude
+                    });
+                },
+                err => {
+                    console.warn("Erro GPS:", err.code);
+
+                    if (!tentou) {
+                        tentou = true;
+                        setTimeout(tentar, 3000); // retry
+                    } else {
+                        resolve({ lat: null, lon: null }); // fallback
+                    }
+                },
+                GEO_OPTIONS
+            );
+        }
+
+        tentar();
     });
 }
 
-// 🔹 REGISTRO
-function registrar(tipo) {
+// 🔹 ENVIO COM RETRY
+async function enviarComRetry(payload, tentativas = 2) {
+    try {
+        await fetch(API, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        });
+        return true;
+    } catch (e) {
+        if (tentativas > 0) {
+            await new Promise(r => setTimeout(r, 2000));
+            return enviarComRetry(payload, tentativas - 1);
+        }
+        return false;
+    }
+}
+
+// 🔹 REGISTRO PRINCIPAL
+async function registrar(tipo) {
     if (enviando) return;
 
     const nome = campoNome.value;
     const cargo = campoCargo.value;
 
     if (!nome || !cargo) {
-        alert("Por favor, preencha todos os campos antes de prosseguir.");
+        alert("Preencha todos os campos.");
         return;
     }
 
-    statusEl.className = "status loading";
-    statusEl.innerHTML = "Obtendo localização GPS...";
-
-    navigator.geolocation.getCurrentPosition(
-        pos => {
-            enviar(nome, cargo, tipo, pos.coords.latitude, pos.coords.longitude);
-        },
-        error => {
-            console.error("Erro GPS:", error);
-            statusEl.className = "status erro";
-            statusEl.innerHTML = "⚠ Ative o GPS para registrar o atendimento";
-        },
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-    );
-}
-
-// 🔹 ENVIO
-async function enviar(nome, cargo, tipo, lat, lon) {
     enviando = true;
+
     statusEl.className = "status loading";
-    statusEl.innerHTML = "Salvando registro...";
+    statusEl.innerHTML = "📍 Obtendo localização...";
 
-    try {
-        await fetch(API, {
-            method: "POST",
-            body: JSON.stringify({
-                nome, cargo, tipo,
-                data: horaAtual(),
-                lat, lon
-            })
-        });
+    const { lat, lon } = await obterLocalizacao();
 
-        // Como não havia tratamento específico do corpo da resposta no original, assumimos sucesso ao resolver a promessa
+    statusEl.innerHTML = lat
+        ? "📡 Localização obtida. Salvando..."
+        : "⚠ Sem GPS. Salvando mesmo assim...";
+
+    const sucesso = await enviarComRetry({
+        nome,
+        cargo,
+        tipo,
+        data: horaAtual(),
+        lat,
+        lon
+    });
+
+    if (sucesso) {
         statusEl.className = "status sucesso";
-        statusEl.innerHTML = tipo === "Início" 
-            ? "✔ Atendimento iniciado!" 
+        statusEl.innerHTML = tipo === "Início"
+            ? "✔ Atendimento iniciado!"
             : "✔ Atendimento finalizado!";
 
         if (tipo === "Início") {
@@ -425,52 +460,62 @@ async function enviar(nome, cargo, tipo, lat, lon) {
         }
 
         salvarEstado();
-        setTimeout(() => { statusEl.innerHTML = ""; }, 5000);
-    } catch (error) {
-        console.error("Erro no envio:", error);
+    } else {
         statusEl.className = "status erro";
-        statusEl.innerHTML = "❌ Erro ao salvar. Verifique sua conexão.";
-    } finally {
-        enviando = false;
+        statusEl.innerHTML = "❌ Erro ao enviar. Tente novamente.";
     }
+
+    enviando = false;
 }
 
 // 🔹 AÇÕES
 function iniciarServico() {
-    if (confirm("Desejamos um excelente atendimento! Confirma o início agora?")) {
+    if (confirm("Confirma o início do atendimento?")) {
         registrar("Início");
     }
 }
 
 function finalizarServico() {
-    if (confirm("Parabéns por mais um atendimento realizado com sucesso! Confirma a finalização agora?")) {
+    if (confirm("Confirma a finalização?")) {
         registrar("Fim");
     }
 }
 
-// 🔹 PWA & FULLSCREEN
+// 🔹 FULLSCREEN
 function entrarFullscreen() {
-    if (/iPad|iPhone|iPod/.test(navigator.userAgent)) return;
-    const el = document.documentElement;
-    if (el.requestFullscreen) el.requestFullscreen();
+    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) return;
+    document.documentElement.requestFullscreen?.();
 }
 
-// Inicialização
+// 🔹 INIT
 doc.addEventListener('DOMContentLoaded', () => {
     restaurarEstado();
 
-    campoNome.addEventListener('input', () => { validarCampos(); salvarEstado(); });
-    campoCargo.addEventListener('change', () => { validarCampos(); salvarEstado(); });
+    campoNome.addEventListener('input', () => {
+        validarCampos();
+        salvarEstado();
+    });
+
+    campoCargo.addEventListener('change', () => {
+        validarCampos();
+        salvarEstado();
+    });
+
     doc.body.addEventListener("click", entrarFullscreen, { once: true });
 
-    // Registro do Service Worker
+    // 🔥 PRÉ-AQUECER GPS
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(() => {}, () => {});
+    }
+
+    // 🔹 SW
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js')
-            .then(reg => console.log('Service Worker registrado:', reg.scope))
-            .catch(err => console.log('Erro ao registrar Service Worker:', err));
+            .then(r => console.log("SW OK:", r.scope))
+            .catch(e => console.log("SW erro:", e));
     }
 });
-
 </script>
+
 </body>
 </html>
